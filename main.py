@@ -1,54 +1,54 @@
-import pymongo
+import pymongo #importar biblioteca
 
-myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-mydb = myclient["Internet"]
-mycol = mydb["Provedor"]
+myclient = pymongo.MongoClient("mongodb://localhost:27017/") #conexão com mongo
+mydb = myclient["Internet"] #nome do database
+mycol = mydb["Provedor"] # "pasta" do database
 
-sair = 1
-op = 0
-exit = 0
+
+op = 0 #variavel para receber opcoes
+exit = 0 #variavel para sair do while
 
 while exit == 0:
 
-    sair = int(input('1 - Ler CSV e enviar dados para banco.\n 2 - Inserir dados manualmente.\n 3 - Apagar dados \n 4 - Gerar TXT \n5 - Sair. \n'))
+    op = int(input('1 - Ler CSV e enviar dados para banco.\n2 - Inserir dados manualmente.\n3 - Apagar dados \n4 - Gerar TXT \n5 - Sair. \n')) #Entrada de dados
 
-    if sair == 1:
-        arq = open('G:\ProjetoPythonMongo\m.csv', 'rb')
+    if op == 1:
+        arq = open('E:\ProjetoPythonMongo\m.csv', 'rb') #abri o arquivo
 
-        lines = arq.readlines()
+        lines = arq.readlines() #variavel para ler linhas
 
-        for line in lines:
-            column = str(line).split(';')
-            mydict = {"CodMunicipio": column[0], "UF": column[1], "NomeMunicipio": column[2], "NomePrestadora": column[3]}
-            x = mycol.insert_one(mydict)
+        for line in lines:  #for para percorrer o arquivo
+            column = str(line).split(';') #Fazer a divisão do texto quando aparecer ';'
+            mydict = {"CodMunicipio": column[0], "UF": column[1], "NomeMunicipio": column[2], "NomePrestadora": column[3]} #definindo e separando dados
+            x = mycol.insert_one(mydict) #adicionando dados
 
 
-    if sair == 2:
-        codmunicipio = int(input('Digite o codigo do municipio: \n'))
-        uf = (input('Digite o UF: \n'))
-        nomeMunicipio = (input('Digite nome do municipio: \n'))
-        nomePrestadora = (input('Digite o nome do provedor: \n'))
+    if op == 2:
+        codmunicipio = int(input('Digite o codigo do municipio: \n'))  #Entrada de dados
+        uf = (input('Digite o UF: \n')) #Entrada de dados
+        nomeMunicipio = (input('Digite nome do municipio: \n')) #Entrada de dados
+        nomePrestadora = (input('Digite o nome do provedor: \n')) #Entrada de dados
 
         mydict = {"CodMunicipio": codmunicipio, "UF": uf, "NomeMunicipio": nomeMunicipio,
-                  "NomePrestadora": nomePrestadora}
-        x = mycol.insert_one(mydict)
+                  "NomePrestadora": nomePrestadora} #definindo e separando dados
+        x = mycol.insert_one(mydict) #adicionando dados
 
-    if sair == 3:
-        mydb = myclient["Internet"]
+    if op == 3:
+        mydb = myclient["Internet"]  #sinalizando database
         mycol = mydb["Provedor"]
-        x = mycol.delete_many({})
-        print(x.deleted_count, " documents deleted.")
+        x = mycol.delete_many({}) #excluir tudo
+        print(x.deleted_count, " documents deleted.") #mensagem gerada após deletar dados
 
-    if sair == 4:
-        dados = []
-        arq = open('G:\ProjetoPythonMongo\lista.txt', 'w')
+    if op == 4:
+        dados = [] #vetor para salvar dados do mongo para criar um TXT
+        arq = open('E:\ProjetoPythonMongo\lista.txt', 'w') #criando TXT
 
-        for lines in mycol.find({}, {'_id': 0}):
+        for lines in mycol.find({}, {'_id': 0}): #adicionando dados do mongo no vetor e criando/adicionando no TXT
             dados.append(str(lines) + "\n")
             print(lines)
         arq.writelines(dados)
         arq.close()
 
-    if sair == 5:
-        exit = 1
+    if op == 5:
+        exit = 1 #fecha o programa
 
